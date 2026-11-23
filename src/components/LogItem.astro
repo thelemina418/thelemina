@@ -1,0 +1,30 @@
+---
+import { render, getEntry } from 'astro:content';
+import { STATE_LABELS } from '../lib/garden.ts';
+import { formatDate, type LogEntry } from '../lib/content.ts';
+
+interface Props { entry: LogEntry; showWork?: boolean }
+const { entry, showWork = true } = Astro.props;
+const { Content } = await render(entry);
+const work = entry.data.work ? await getEntry(entry.data.work) : undefined;
+---
+
+<li class="entry" id={entry.id}>
+  <p class="head ui">
+    <a class="muted" href={`/log#${entry.id}`}><time datetime={entry.data.date.toISOString()}>{formatDate(entry.data.date)}</time></a>
+    {showWork && work && <a href={`/works/${work.id}`}>{work.data.title}</a>}
+    {entry.data.state && (
+      <span class="change">
+        → {STATE_LABELS[entry.data.state]}{entry.data.waitingOn && <span class="muted"> (waiting on {entry.data.waitingOn})</span>}
+      </span>
+    )}
+  </p>
+  <div class="body"><Content /></div>
+</li>
+
+<style>
+  .entry { padding-block: 0.75rem; }
+  .head { display: flex; gap: 0.75rem; flex-wrap: wrap; margin: 0; }
+  .change { color: var(--accent); }
+  .body :global(p) { margin: 0.25rem 0; }
+</style>

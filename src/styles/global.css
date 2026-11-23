@@ -1,0 +1,39 @@
+/* Placeholder tokens until the design session: dark-first "ritual night". */
+:root {
+  color-scheme: dark light;
+  --bg: #0d0b10;
+  --surface: #16131b;
+  --text: #e9e4ea;
+  --muted: #9c93a3;
+  --line: #2b2532;
+  --accent: #d9a75b; /* torchlight */
+  --accent-2: #9b8cd9; /* dark-moon violet */
+  --font-body: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --font-ui: ui-sans-serif, system-ui, sans-serif;
+  --measure: 40rem;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f6f2ec;
+    --surface: #ece6dd;
+    --text: #1d1a20;
+    --muted: #645c69;
+    --line: #d6cec4;
+    --accent: #8a5a12;
+    --accent-2: #5b4aa8;
+  }
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--bg); color: var(--text); }
+body {
+  margin: 0;
+  font: 1.0625rem/1.65 var(--font-body);
+  background: var(--bg);
+}
+a { color: var(--accent); text-underline-offset: 0.2em; }
+a:hover { color: var(--text); }
+h1, h2, h3 { line-height: 1.2; font-weight: 500; letter-spacing: 0.01em; }
+.wrap { max-width: var(--measure); margin: 0 auto; padding: 0 1rem; }
+.muted { color: var(--muted); }
+.ui { font-family: var(--font-ui); font-size: 0.875rem; }
+ul.plain { list-style: none; padding: 0; margin: 0; }

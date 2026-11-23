@@ -1,0 +1,22 @@
+---
+import Base from '../../layouts/Base.astro';
+import WorkCard from '../../components/WorkCard.astro';
+import { getGarden } from '../../lib/content.ts';
+import { MEDIA, STATE_ORDER, type Medium } from '../../lib/garden.ts';
+
+export async function getStaticPaths() {
+  const garden = await getGarden();
+  return MEDIA.filter((m) => garden.some((w) => w.data.medium.includes(m))).map((medium) => ({ params: { medium } }));
+}
+
+const medium = Astro.params.medium as Medium;
+const works = (await getGarden())
+  .filter((w) => w.data.medium.includes(medium))
+  .sort((a, b) => STATE_ORDER.indexOf(a.current.state) - STATE_ORDER.indexOf(b.current.state));
+---
+
+<Base title={`Garden: ${medium}`}>
+  <h1>Garden <span class="muted">/ {medium}</span></h1>
+  <ul class="plain">{works.map((work) => <WorkCard work={work} />)}</ul>
+  <p class="ui"><a href="/garden">← Every Work</a></p>
+</Base>

@@ -1,0 +1,28 @@
+---
+import Base from '../../layouts/Base.astro';
+import WorkCard from '../../components/WorkCard.astro';
+import { getGarden } from '../../lib/content.ts';
+import { MEDIA, STATE_LABELS, STATE_ORDER } from '../../lib/garden.ts';
+
+const garden = await getGarden();
+const groups = STATE_ORDER.map((state) => ({ state, works: garden.filter((w) => w.current.state === state) })).filter(
+  (g) => g.works.length,
+);
+// A Medium only appears once it has a Work.
+const media = MEDIA.filter((m) => garden.some((w) => w.data.medium.includes(m)));
+---
+
+<Base title="Garden">
+  <h1>Garden</h1>
+  {media.length > 1 && (
+    <p class="ui">
+      {media.map((m) => <a href={`/garden/${m}`}>{m}</a>).reduce((acc: any[], el, i) => (i ? [...acc, ' · ', el] : [el]), [])}
+    </p>
+  )}
+  {groups.map((g) => (
+    <section>
+      <h2>{STATE_LABELS[g.state]}</h2>
+      <ul class="plain">{g.works.map((work) => <WorkCard work={work} />)}</ul>
+    </section>
+  ))}
+</Base>

@@ -1,0 +1,43 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import StateBadge from '../../components/StateBadge.astro';
+import LogItem from '../../components/LogItem.astro';
+import { getGarden, getLog, formatDate } from '../../lib/content.ts';
+
+export async function getStaticPaths() {
+  return (await getGarden()).map((work) => ({ params: { id: work.id }, props: { work } }));
+}
+
+const { work } = Astro.props;
+const { Content } = await render(work);
+const history = (await getLog()).filter((e) => e.data.work?.id === work.id);
+const { live, source } = work.data.links ?? {};
+---
+
+<Base title={work.data.title} description={work.data.summary}>
+  <article>
+    <h1>{work.data.title}</h1>
+    <p class="lede">{work.data.summary}</p>
+    <p class="meta"><StateBadge current={work.current} showSince /> <span class="ui muted">{work.data.medium.join(' · ')} · planted {formatDate(work.data.planted)}</span></p>
+    {(live || source) && (
+      <p class="ui links">
+        {live && <a href={live}>Open it</a>}
+        {source && <a href={source}>Source</a>}
+      </p>
+    )}
+    <Content />
+  </article>
+
+  {history.length > 0 && (
+    <section aria-labelledby="log">
+      <h2 id="log">Log</h2>
+      <ul class="plain">{history.map((entry) => <LogItem entry={entry} showWork={false} />)}</ul>
+    </section>
+  )}
+</Base>
+
+<style>
+  .lede { font-size: 1.2rem; }
+  .links { display: flex; gap: 1rem; }
+</style>
