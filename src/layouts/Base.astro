@@ -1,0 +1,53 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const { title, description = 'The garden of Thelemina: code, music, writing, and other workings.' } = Astro.props;
+const fullTitle = title ? `${title} · Thelemina` : 'Thelemina';
+const nav = [
+  { href: '/garden', label: 'Garden' },
+  { href: '/log', label: 'Log' },
+  { href: '/about', label: 'About' },
+];
+const path = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title="Thelemina's log" href="/rss.xml" />
+    <link rel="canonical" href={new URL(path, Astro.site)} />
+  </head>
+  <body>
+    <header class="wrap site-header ui">
+      <a class="home" href="/">Thelemina</a>
+      <nav aria-label="Site">
+        {nav.map((n) => <a href={n.href} aria-current={path.startsWith(n.href) ? 'page' : undefined}>{n.label}</a>)}
+      </nav>
+    </header>
+    <main class="wrap">
+      <slot />
+    </main>
+    <footer class="wrap site-footer ui muted">
+      <a href="/rss.xml">RSS</a>
+      <a href="https://github.com/thelemina418/thelemina">Source</a>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .site-header, .site-footer { display: flex; gap: 1.25rem; align-items: baseline; padding-block: 1.5rem; }
+  .site-header nav { display: flex; gap: 1rem; margin-left: auto; }
+  .site-header a { text-decoration: none; }
+  .home { color: var(--text); letter-spacing: 0.08em; text-transform: lowercase; }
+  [aria-current='page'] { color: var(--text); }
+  .site-footer { border-top: 1px solid var(--line); margin-top: 4rem; }
+</style>

@@ -1,0 +1,20 @@
+---
+import { STATE_LABELS } from '../lib/garden.ts';
+import type { WorkState } from '../lib/garden.ts';
+import { formatDate } from '../lib/content.ts';
+
+interface Props { current: WorkState; showSince?: boolean }
+const { current, showSince = false } = Astro.props;
+---
+
+<span class={`badge ui state-${current.state}`}>
+  {STATE_LABELS[current.state]}{showSince && current.since && <span class="muted"> since {formatDate(current.since)}</span>}
+</span>
+{current.waitingOn && <span class="ui muted waiting"> · waiting on {current.waitingOn}</span>}
+
+<style>
+  .badge { border: 1px solid var(--line); border-radius: 999px; padding: 0.05rem 0.6rem; white-space: nowrap; }
+  .state-growing, .state-living { border-color: var(--accent); }
+  .state-finished { border-color: var(--accent-2); }
+  .state-fallow, .state-on-ice { opacity: 0.75; }
+</style>

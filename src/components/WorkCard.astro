@@ -1,0 +1,20 @@
+---
+import StateBadge from './StateBadge.astro';
+import type { Work } from '../lib/content.ts';
+
+interface Props { work: Work }
+const { work } = Astro.props;
+---
+
+<li class="work">
+  <h3><a href={`/works/${work.id}`}>{work.data.title}</a></h3>
+  <p>{work.data.summary}</p>
+  <p class="meta"><StateBadge current={work.current} /> <span class="ui muted">{work.data.medium.join(' · ')}</span></p>
+</li>
+
+<style>
+  .work { padding-block: 1rem; border-bottom: 1px solid var(--line); }
+  h3 { margin: 0 0 0.25rem; font-size: 1.25rem; }
+  h3 a { color: var(--text); text-decoration: none; }
+  p { margin: 0.25rem 0; }
+</style>

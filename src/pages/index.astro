@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+import LogItem from '../components/LogItem.astro';
+import WorkCard from '../components/WorkCard.astro';
+import { getGarden, getLog } from '../lib/content.ts';
+
+const [garden, log] = await Promise.all([getGarden(), getLog()]);
+const tended = garden.filter((w) => w.current.state === 'growing' || w.current.state === 'living');
+---
+
+<Base>
+  <h1>Thelemina</h1>
+
+  <section aria-labelledby="tending">
+    <h2 id="tending">In the garden</h2>
+    <ul class="plain">{tended.map((work) => <WorkCard work={work} />)}</ul>
+    <p class="ui"><a href="/garden">Every Work →</a></p>
+  </section>
+
+  <section aria-labelledby="recent">
+    <h2 id="recent">Recently</h2>
+    <ul class="plain">{log.slice(0, 10).map((entry) => <LogItem entry={entry} />)}</ul>
+    <p class="ui"><a href="/log">The whole log →</a></p>
+  </section>
+</Base>
